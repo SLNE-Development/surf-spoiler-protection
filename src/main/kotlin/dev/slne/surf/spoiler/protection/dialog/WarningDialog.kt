@@ -6,8 +6,10 @@ import dev.slne.surf.surfapi.bukkit.api.dialog.base
 import dev.slne.surf.surfapi.bukkit.api.dialog.dialog
 import dev.slne.surf.surfapi.bukkit.api.dialog.type
 import dev.slne.surf.surfapi.core.api.font.toSmallCaps
+import dev.slne.surf.surfapi.core.api.messages.CommonComponents
 import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.potion.PotionEffectType
 
 fun warningDialog() = dialog {
     base {
@@ -18,8 +20,11 @@ fun warningDialog() = dialog {
         canCloseWithEscape = false
 
         body {
-            plainMessage {
-                error("Achtung! Du bist dabei, Inhalte zu sehen, die Spoiler enthalten können. Bist du sicher, dass du fortfahren möchtest?")
+            plainMessage(300) {
+                error(
+                    "Achtung! Du bist dabei, Inhalte zu sehen, die Spoiler enthalten können. Bist du sicher, dass du fortfahren möchtest?",
+                    TextDecoration.BOLD
+                )
             }
         }
     }
@@ -33,6 +38,7 @@ fun warningDialog() = dialog {
 
                 action {
                     playerCallback {
+                        it.removePotionEffect(PotionEffectType.BLINDNESS)
                         it.closeDialog()
                     }
                 }
@@ -45,8 +51,13 @@ fun warningDialog() = dialog {
 
                 action {
                     playerCallback {
+                        it.removePotionEffect(PotionEffectType.BLINDNESS)
                         it.kick(buildText {
-                            error("kicked")
+                            appendDisconnectMessage("DU WURDEST VOM SERVER GEWORFEN", {
+                                variableValue("Du hast den Spoiler Schutz abgelehnt.")
+                            }, {
+                                append(CommonComponents.ISSUE_FOOTER)
+                            })
                         })
                     }
                 }
